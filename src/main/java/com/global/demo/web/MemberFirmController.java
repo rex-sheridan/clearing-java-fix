@@ -1,6 +1,7 @@
 package com.global.demo.web;
 
 import com.global.demo.model.Trade;
+import com.global.demo.model.FixReportRepository;
 import com.global.demo.service.TradeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,13 +25,16 @@ import java.util.UUID;
 public class MemberFirmController {
     private static final Logger log = LoggerFactory.getLogger(MemberFirmController.class);
     private final TradeService tradeService;
+    private final FixReportRepository fixReportRepository;
 
-    public MemberFirmController(TradeService tradeService) {
+    public MemberFirmController(TradeService tradeService, FixReportRepository fixReportRepository) {
         this.tradeService = tradeService;
+        this.fixReportRepository = fixReportRepository;
     }
 
-    @GetMapping("/")
-    public String index() {
+    @GetMapping("/member")
+    public String index(org.springframework.ui.Model model) {
+        model.addAttribute("reports", fixReportRepository.findAllByOrderByReceivedAtDesc());
         return "submit-trade";
     }
 
@@ -52,7 +56,7 @@ public class MemberFirmController {
 
         sendFixAllocation(trade);
 
-        return "redirect:/";
+        return "redirect:/member";
     }
 
     private void sendFixAllocation(Trade trade) {

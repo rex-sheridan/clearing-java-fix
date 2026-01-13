@@ -23,8 +23,8 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = ClearingHouseApp.class)
+@ActiveProfiles({ "test", "acceptor", "initiator" })
 @org.springframework.test.context.TestPropertySource(properties = {
         "fix.acceptor.config=acceptor-test.cfg",
         "fix.initiator.config=initiator-test.cfg"

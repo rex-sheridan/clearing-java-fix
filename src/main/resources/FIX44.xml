@@ -53,6 +53,7 @@
       <field name="Quantity" required="Y"/>
       <field name="AvgPx" required="Y"/>
       <field name="TradeDate" required="Y"/>
+      <field name="Text" required="N"/>
     </message>
     <message name="AllocationReport" msgtype="AS" msgcat="app">
       <field name="AllocReportID" required="Y"/>
@@ -65,6 +66,7 @@
       <field name="Quantity" required="Y"/>
       <field name="AvgPx" required="Y"/>
       <field name="TradeDate" required="Y"/>
+      <field name="Text" required="N"/>
     </message>
   </messages>
   <fields>

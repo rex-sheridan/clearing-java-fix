@@ -59,7 +59,6 @@ public class ClearingAcceptor extends MessageCracker implements Application {
         crack(message, sessionId);
     }
 
-    @Handler
     public void onMessage(AllocationInstruction message, SessionID sessionId) throws FieldNotFound {
         String allocId = message.getAllocID().getValue();
         String tradeId = message.getTradeDate().getValue() + "-" + allocId;
@@ -92,6 +91,7 @@ public class ClearingAcceptor extends MessageCracker implements Application {
         report.set(instruction.getTradeDate());
         report.set(instruction.getSymbol());
         report.set(new AllocStatus(AllocStatus.ACCEPTED));
+        report.set(new Text("Allocation Report for " + instruction.getAllocID().getValue()));
 
         try {
             Session.sendToTarget(report, sessionId);
