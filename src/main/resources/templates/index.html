@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Global Clearing FIX Demo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+            color: white;
+            padding: 40px 0;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+        }
+
+        .status-submitted {
+            color: #ffc107;
+            font-weight: bold;
+        }
+
+        .status-allocated {
+            color: #0dcaf0;
+            font-weight: bold;
+        }
+
+        .status-confirmed {
+            color: #198754;
+            font-weight: bold;
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+            <span class="navbar-brand">Global Clear Credit | <small>Post-Trade FIX Demo</small></span>
+        </div>
+    </nav>
+
+    <div class="hero text-center">
+        <div class="container">
+            <h1>Clearing House Ledger</h1>
+            <p class="lead">Simulating Central Counterparty (CCP) Post-Trade Processing</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card p-4">
+                    <h4>Clearing Ledger</h4>
+                    <p class="text-muted small">Updated in real-time via FIX Allocation Instructions from Members.</p>
+                    <table class="table table-hover mt-3">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Trade ID</th>
+                                <th>Symbol</th>
+                                <th>Qty</th>
+                                <th>Side</th>
+                                <th>Status</th>
+                                <th>Last Update</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="trade : ${trades}">
+                                <td th:text="${trade.tradeId}"></td>
+                                <td th:text="${trade.symbol}"></td>
+                                <td th:text="${#numbers.formatDecimal(trade.quantity, 0, 'COMMA', 0, 'POINT')}"></td>
+                                <td th:text="${trade.side}"></td>
+                                <td>
+                                    <span th:class="'status-' + ${trade.status.toLowerCase()}"
+                                        th:text="${trade.status}"></span>
+                                </td>
+                                <td th:text="${#temporals.format(trade.updatedAt, 'HH:mm:ss')}"></td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(trades)}">
+                                <td colspan="6" class="text-center text-muted">No trades cleared yet.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-end mt-2">
+                        <a href="/" class="btn btn-sm btn-outline-secondary">Refresh Ledger</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="mt-5 py-4 text-center text-muted border-top">
+        Global Clearing Java Demo &copy; 2024
+    </footer>
+
+</body>
+
+</html>

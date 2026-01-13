@@ -1,0 +1,60 @@
+package com.global.demo.service;
+
+import com.global.demo.model.Trade;
+import com.global.demo.model.TradeRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.UUID;
+
+@Service
+public class TradeServiceImpl implements TradeService {
+    private static final Logger log = LoggerFactory.getLogger(TradeServiceImpl.class);
+    private final TradeRepository tradeRepository;
+
+    public TradeServiceImpl(TradeRepository tradeRepository) {
+        this.tradeRepository = tradeRepository;
+    }
+
+    @Override
+    @Transactional
+    public Trade createTrade(Trade trade) {
+        if (trade.getTradeId() == null) {
+            trade.setTradeId("TRD-" + UUID.randomUUID().toString().substring(0, 8));
+        }
+        trade.setStatus("SUBMITTED");
+        log.info("Creating trades: {}", trade.getTradeId());
+        return tradeRepository.save(trade);
+    }
+
+    @Override
+    @Transactional
+    public Trade processAllocation(String tradeId, String allocationId) {
+        log.info("Processing allocation for trade: {}, allocationId: {}", tradeId, allocationId);
+        Trade trade = tradeRepository.findByTradeId(tradeId)
+                .orElseThrow(() -> new RuntimeException("Trade not found: " + tradeId));
+
+        trade.setAllocationId(allocationId);
+        trade.setStatus("ALLOCATED");
+        return tradeRepository.save(trade);
+    }
+
+    @Override
+    @Transactional
+    public Trade confirmTrade(String tradeId) {
+        log.info("Confirming trade: {}", tradeId);
+        Trade trade = tradeRepository.findByTradeId(tradeId)
+                .orElseThrow(() -> new RuntimeException("Trade not found: " + tradeId));
+
+        trade.setStatus("CONFIRMED");
+        return tradeRepository.save(trade);
+    }
+
+    @Override
+    public List<Trade> getAllTrades() {
+        return tradeRepository.findAll();
+    }
+}

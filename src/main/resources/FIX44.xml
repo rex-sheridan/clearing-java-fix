@@ -1,0 +1,119 @@
+<fix major="4" minor="4">
+  <header>
+    <field name="BeginString" required="Y"/>
+    <field name="BodyLength" required="Y"/>
+    <field name="MsgType" required="Y"/>
+    <field name="SenderCompID" required="Y"/>
+    <field name="TargetCompID" required="Y"/>
+    <field name="MsgSeqNum" required="Y"/>
+    <field name="SendingTime" required="Y"/>
+  </header>
+  <trailer>
+    <field name="CheckSum" required="Y"/>
+  </trailer>
+  <messages>
+    <!-- Admin Messages -->
+    <message name="Heartbeat" msgtype="0" msgcat="admin">
+      <field name="TestReqID" required="N"/>
+    </message>
+    <message name="TestRequest" msgtype="1" msgcat="admin">
+      <field name="TestReqID" required="Y"/>
+    </message>
+    <message name="ResendRequest" msgtype="2" msgcat="admin">
+      <field name="BeginSeqNo" required="Y"/>
+      <field name="EndSeqNo" required="Y"/>
+    </message>
+    <message name="Reject" msgtype="3" msgcat="admin">
+      <field name="RefSeqNum" required="Y"/>
+      <field name="RefTagID" required="N"/>
+      <field name="RefMsgType" required="N"/>
+      <field name="SessionRejectReason" required="N"/>
+      <field name="Text" required="N"/>
+    </message>
+    <message name="SequenceReset" msgtype="4" msgcat="admin">
+      <field name="GapFillFlag" required="N"/>
+      <field name="NewSeqNo" required="Y"/>
+    </message>
+    <message name="Logout" msgtype="5" msgcat="admin">
+      <field name="Text" required="N"/>
+    </message>
+    <message name="Logon" msgtype="A" msgcat="admin">
+      <field name="EncryptMethod" required="Y"/>
+      <field name="HeartBtInt" required="Y"/>
+      <field name="ResetSeqNumFlag" required="N"/>
+    </message>
+
+    <!-- App Messages -->
+    <message name="AllocationInstruction" msgtype="J" msgcat="app">
+      <field name="AllocID" required="Y"/>
+      <field name="AllocTransType" required="Y"/>
+      <field name="AllocType" required="Y"/>
+      <field name="Side" required="Y"/>
+      <field name="Symbol" required="Y"/>
+      <field name="Quantity" required="Y"/>
+      <field name="AvgPx" required="Y"/>
+      <field name="TradeDate" required="Y"/>
+    </message>
+    <message name="AllocationReport" msgtype="AS" msgcat="app">
+      <field name="AllocReportID" required="Y"/>
+      <field name="AllocID" required="Y"/>
+      <field name="AllocTransType" required="Y"/>
+      <field name="AllocReportType" required="Y"/>
+      <field name="AllocStatus" required="Y"/>
+      <field name="Side" required="Y"/>
+      <field name="Symbol" required="Y"/>
+      <field name="Quantity" required="Y"/>
+      <field name="AvgPx" required="Y"/>
+      <field name="TradeDate" required="Y"/>
+    </message>
+  </messages>
+  <fields>
+    <field number="1" name="Account" type="STRING"/>
+    <field number="6" name="AvgPx" type="PRICE"/>
+    <field number="7" name="BeginSeqNo" type="INT"/>
+    <field number="8" name="BeginString" type="STRING"/>
+    <field number="9" name="BodyLength" type="INT"/>
+    <field number="10" name="CheckSum" type="STRING"/>
+    <field number="16" name="EndSeqNo" type="INT"/>
+    <field number="34" name="MsgSeqNum" type="INT"/>
+    <field number="35" name="MsgType" type="STRING"/>
+    <field number="36" name="NewSeqNo" type="INT"/>
+    <field number="38" name="OrderQty" type="QTY"/>
+    <field number="45" name="RefSeqNum" type="INT"/>
+    <field number="49" name="SenderCompID" type="STRING"/>
+    <field number="52" name="SendingTime" type="UTCTIMESTAMP"/>
+    <field number="53" name="Quantity" type="QTY"/>
+    <field number="54" name="Side" type="CHAR">
+      <value enum="1" description="BUY"/>
+      <value enum="2" description="SELL"/>
+    </field>
+    <field number="55" name="Symbol" type="STRING"/>
+    <field number="56" name="TargetCompID" type="STRING"/>
+    <field number="58" name="Text" type="STRING"/>
+    <field number="70" name="AllocID" type="STRING"/>
+    <field number="71" name="AllocTransType" type="CHAR">
+      <value enum="0" description="NEW"/>
+    </field>
+    <field number="75" name="TradeDate" type="LOCALMKTDATE"/>
+    <field number="87" name="AllocStatus" type="INT">
+      <value enum="0" description="ACCEPTED"/>
+    </field>
+    <field number="98" name="EncryptMethod" type="INT"/>
+    <field number="108" name="HeartBtInt" type="INT"/>
+    <field number="112" name="TestReqID" type="STRING"/>
+    <field number="123" name="GapFillFlag" type="BOOLEAN"/>
+    <field number="141" name="ResetSeqNumFlag" type="BOOLEAN"/>
+    <field number="371" name="RefTagID" type="INT"/>
+    <field number="372" name="RefMsgType" type="STRING"/>
+    <field number="373" name="SessionRejectReason" type="INT"/>
+    <field number="626" name="AllocType" type="INT">
+      <value enum="1" description="CALCULATED_PRELIMINARY_LEVEL"/>
+    </field>
+    <field number="755" name="AllocReportID" type="STRING"/>
+    <field number="794" name="AllocReportType" type="INT">
+      <value enum="3" description="SELLSIDE_CALCULATED_USING_PRELIMINARY"/>
+      <value enum="4" description="SELLSIDE_CALCULATED_WITHOUT_PRELIMINARY"/>
+      <value enum="8" description="ACCEPTANCE_REPORT"/>
+    </field>
+  </fields>
+</fix>
