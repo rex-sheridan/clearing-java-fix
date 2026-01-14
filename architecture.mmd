@@ -1,0 +1,36 @@
+graph TD
+    subgraph "User Interface"
+        User("👤 User")
+    end
+
+    subgraph "Member Firm Application"
+        direction LR
+        A["MemberFirmController(/submit-trade)"]
+        B[TradeService]
+        C["MemberInitiator(FIX Client)"]
+        
+        A -- HTTP POST --> B;
+        B -- sends message --> C;
+    end
+    
+    subgraph "Clearing House Application"
+        direction LR
+        E["ClearingAcceptor<br>(FIX Server)"]
+        F[TradeService]
+        G[TradeRepository & FixReportRepository]
+        H[H2 Database]
+        I["ClearingHouseController<br>(/trades)"]
+        
+        E -- receives message --> F;
+        F -- saves entities --> G;
+        G -- persists data --> H;
+        I -- fetches data --> G;
+    end
+
+    subgraph "Admin Interface"
+        Admin("👤 Clearing House User")
+    end
+
+    User -- Submits Trade --> A;
+    C -- FIX Protocol over TCP/IP --> E;
+    Admin -- Views Trades --> I;
