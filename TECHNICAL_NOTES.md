@@ -19,10 +19,12 @@ The goal was to separate the Acceptor and Initiator into distinct runnable proce
 
 ## Database & Persistence
 
-### Shared H2 Instance
-- To simulate a shared ledger, both processes point to the same file-based H2 database.
-- **Concurrent Access:** Enabled via the `;AUTO_SERVER=TRUE` JDBC parameter. This allows one process to act as the primary database server while the other connects as a client.
-- **Location:** The database files are stored in `target/` to ensure they are cleaned during `mvn clean`.
+### Separate H2 Instances
+- Originally configured with a shared database, the project now uses independent H2 file-based instances to enforce true architectural separation.
+- **Member Firm:** Stores local trade submissions and received FIX reports in `./target/member_db`.
+- **Clearing House:** Maintains the central clearing ledger in `./target/clearing_db`.
+- **Configuration:** Each process specifies its own JDBC URL in `application-initiator.yml` and `application-acceptor.yml`.
+- **Location:** The database files are stored in `target/` to ensure they are cleared during `mvn clean`.
 
 ## FIX Protocol Details
 

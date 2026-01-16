@@ -15,15 +15,16 @@ The system consists of two independent processes communicating via QuickFIX/J:
 sequenceDiagram
     participant U as User
     participant MF as Member Firm (Initiator)
+    participant MDB as Member DB
     participant CH as Clearing House (Acceptor)
-    participant DB as Shared H2 Database
+    participant CDB as Clearing DB
 
     U->>MF: Submit Trade Form (/member)
-    MF->>MF: Create Local Trade Record
+    MF->>MDB: Create Local Trade Record
     MF->>CH: Send AllocationInstruction (35=J)
-    CH->>DB: Save Trade & Update Status
+    CH->>CDB: Save Trade & Update Status
     CH->>MF: Send AllocationReport (35=AS, Status=Accepted)
-    MF->>DB: Save FIX Report
+    MF->>MDB: Save FIX Report
     U->>MF: View FIX Reports Section
     U->>CH: View Clearing Ledger (/)
 ```
@@ -119,7 +120,7 @@ mvn spring-boot:run -Dstart-class=com.global.demo.MemberFirmApp
 - **Profiles:**
     - `acceptor`: Activates Central Counterparty logic and ledger UI.
     - `initiator`: Activates Trading Firm logic and submission UI.
-- **Database:** Uses H2 file-based storage at `./target/clearingdb`. Concurrent access is enabled via `;AUTO_SERVER=TRUE`.
+- **Database:** Uses independent H2 instances for isolation: `clearing_db` (Acceptor) and `member_db` (Initiator), both located in the `./target/` directory.
 
 ## Features
 
