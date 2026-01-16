@@ -53,6 +53,11 @@
 			<artifactId>quickfixj-messages-all</artifactId>
 			<version>${quickfixj.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>com.cloudhopper.proxool</groupId>
+			<artifactId>proxool</artifactId>
+			<version>0.9.1</version>
+		</dependency>
 
 		<!-- Observability -->
 		<dependency>
@@ -85,6 +90,9 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<mainClass>${start-class}</mainClass>
+					<jvmArguments>
+						--add-opens java.base/java.lang=ALL-UNNAMED
+					</jvmArguments>
 					<excludes>
 						<exclude>
 							<groupId>org.projectlombok</groupId>

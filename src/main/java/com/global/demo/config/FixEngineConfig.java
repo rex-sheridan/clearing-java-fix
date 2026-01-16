@@ -24,8 +24,8 @@ public class FixEngineConfig {
         InputStream inputStream = FixEngineConfig.class.getClassLoader().getResourceAsStream(configFile);
         SessionSettings settings = new SessionSettings(inputStream);
 
-        MessageStoreFactory storeFactory = new FileStoreFactory(settings);
-        LogFactory logFactory = new FileLogFactory(settings);
+        MessageStoreFactory storeFactory = new JdbcStoreFactory(settings);
+        LogFactory logFactory = new JdbcLogFactory(settings);
         MessageFactory messageFactory = new DefaultMessageFactory();
 
         ThreadedSocketAcceptor acceptor = new ThreadedSocketAcceptor(
@@ -43,8 +43,8 @@ public class FixEngineConfig {
         InputStream inputStream = FixEngineConfig.class.getClassLoader().getResourceAsStream(configFile);
         SessionSettings settings = new SessionSettings(inputStream);
 
-        MessageStoreFactory storeFactory = new FileStoreFactory(settings);
-        LogFactory logFactory = new FileLogFactory(settings);
+        MessageStoreFactory storeFactory = new JdbcStoreFactory(settings);
+        LogFactory logFactory = new JdbcLogFactory(settings);
         MessageFactory messageFactory = new DefaultMessageFactory();
 
         ThreadedSocketInitiator initiator = new ThreadedSocketInitiator(

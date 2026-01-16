@@ -28,6 +28,15 @@ The goal was to separate the Acceptor and Initiator into distinct runnable proce
 
 ## FIX Protocol Details
 
+### JDBC Connection Pooling
+- QuickFIX/J requires a connection pooling library when using JDBC storage.
+- **Library:** The project uses `Proxool` (via `com.cloudhopper.proxool:proxool:0.9.1`).
+- **Java 17+ Compatibility:** Proxool 0.9.1 uses a legacy version of CGLIB that requires specific JVM flags to function on modern Java versions. The `spring-boot-maven-plugin` is configured with:
+  ```xml
+  <jvmArguments>--add-opens java.base/java.lang=ALL-UNNAMED</jvmArguments>
+  ```
+- **Automatic Setup:** `JdbcCreateTables=Y` is enabled in the configuration files to handle schema creation automatically across the independent H2 instances.
+
 ### Data Dictionary (`FIX44.xml`)
 - A custom data dictionary was implemented to support specific `AllocationInstruction` (35=J) and `AllocationReport` (35=AS) fields.
 - **Customization:** Tag 58 (Text) was explicitly added to the `AllocationReport` message definition to prevent session-level rejections during message crack.
