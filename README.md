@@ -72,6 +72,11 @@ graph TD
     Admin -- Views Trades --> I;
 ```
 
+## UI Screenshots
+
+![Member Firm](assets/MemberFirm.png)
+![Clearing House](assets/ClearingHouse.png)
+
 ## Tech Stack
 
 - **Java 17**
