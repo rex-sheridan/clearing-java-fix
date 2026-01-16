@@ -100,7 +100,6 @@
                                 <th>Qty</th>
                                 <th>Price</th>
                                 <th>Status</th>
-                                <th>Text</th>
                                 <th>Received</th>
                             </tr>
                         </thead>
@@ -120,7 +119,6 @@
                                     <span th:class="'badge ' + (${report.status} == '0' ? 'bg-success' : 'bg-info')"
                                         th:text="${report.status}"></span>
                                 </td>
-                                <td th:text="${report.text}"></td>
                                 <td th:text="${#temporals.format(report.receivedAt, 'HH:mm:ss')}"></td>
                             </tr>
                             <tr th:if="${#lists.isEmpty(reports)}">

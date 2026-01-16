@@ -41,9 +41,11 @@ graph TD
         A["MemberFirmController(/submit-trade)"]
         B[TradeService]
         C["MemberInitiator(FIX Client)"]
+        D[Member Database]
         
         A -- HTTP POST --> B;
         B -- sends message --> C;
+        B -- persists local report --> D;
     end
     
     subgraph "Clearing House Application"
@@ -51,7 +53,7 @@ graph TD
         E["ClearingAcceptor<br>(FIX Server)"]
         F[TradeService]
         G[TradeRepository & FixReportRepository]
-        H[H2 Database]
+        H[Clearing Database]
         I["ClearingHouseController<br>(/trades)"]
         
         E -- receives message --> F;
@@ -67,7 +69,6 @@ graph TD
     User -- Submits Trade --> A;
     C -- FIX Protocol over TCP/IP --> E;
     Admin -- Views Trades --> I;
-
 ```
 
 ## Tech Stack

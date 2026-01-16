@@ -2,7 +2,7 @@ spring:
   application:
     name: clearing-fix-demo
   datasource:
-    url: jdbc:h2:mem:clearingdb;DB_CLOSE_DELAY=-1
+    url: jdbc:h2:mem:default_db;DB_CLOSE_DELAY=-1
     username: sa
     password:
     driver-class-name: org.h2.Driver
