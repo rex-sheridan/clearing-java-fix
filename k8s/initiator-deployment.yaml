@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fix-initiator
+  labels:
+    app: fix-initiator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fix-initiator
+  template:
+    metadata:
+      labels:
+        app: fix-initiator
+    spec:
+      containers:
+        - name: fix-initiator
+          image: clearing-fix-demo:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: APP_MODE
+              value: "initiator"
+            - name: FIX_INITIATOR_CONFIG
+              value: "/app/config/initiator.cfg"
+          ports:
+            - containerPort: 8081
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/config
+            - name: data-volume
+              mountPath: /app/data
+          resources:
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8081
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8081
+            initialDelaySeconds: 30
+            periodSeconds: 10
+      volumes:
+        - name: config-volume
+          configMap:
+            name: initiator-config
+        - name: data-volume
+          emptyDir: {}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: initiator-config
+data:
+  initiator.cfg: |
+    [default]
+    ConnectionType=initiator
+    StartTime=00:00:00
+    EndTime=00:00:00
+    HeartBtInt=3
+    ReconnectInterval=5
+    SenderCompID=MEMBER_ONE
+    TargetCompID=GLOBAL_CLEAR
+    SocketConnectHost=fix-acceptor
+    SocketConnectPort=9876
+    UseDataDictionary=Y
+    DataDictionary=FIX44.xml
+    FileStorePath=/app/data/initiator/store
+    FileLogPath=/app/data/initiator/logs
+    
+    [session]
+    BeginString=FIX.4.4
+    SenderCompID=MEMBER_ONE
+    TargetCompID=GLOBAL_CLEAR

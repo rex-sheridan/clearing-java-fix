@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fix-acceptor
+  labels:
+    app: fix-acceptor
+spec:
+  ports:
+    - name: fix
+      port: 9876
+      targetPort: 9876
+    - name: http
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: fix-acceptor
+  type: ClusterIP

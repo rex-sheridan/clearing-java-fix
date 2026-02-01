@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fix-acceptor
+  labels:
+    app: fix-acceptor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fix-acceptor
+  template:
+    metadata:
+      labels:
+        app: fix-acceptor
+    spec:
+      containers:
+        - name: fix-acceptor
+          image: clearing-fix-demo:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: APP_MODE
+              value: "acceptor"
+          ports:
+            - containerPort: 9876
+            - containerPort: 8080
+          volumeMounts:
+            - name: data-volume
+              mountPath: /app/data
+          resources:
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+            requests:
+              cpu: "500m"
+              memory: "512Mi"
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+      volumes:
+        - name: data-volume
+          emptyDir: {}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: acceptor-config
+data:
+  acceptor.cfg: |
+    [default]
+    ConnectionType=acceptor
+    StartTime=00:00:00
+    EndTime=00:00:00
+    HeartBtInt=30
+    ValidOrderTypes=1,2,F
+    SenderCompID=GLOBAL_CLEAR
+    TargetCompID=MEMBER_ONE
+    SocketAcceptPort=9876
+    UseDataDictionary=Y
+    DataDictionary=FIX44.xml
+    FileStorePath=/app/data/acceptor/store
+    FileLogPath=/app/data/acceptor/logs
+    
+    [session]
+    BeginString=FIX.4.4
+    SenderCompID=GLOBAL_CLEAR
+    TargetCompID=MEMBER_ONE

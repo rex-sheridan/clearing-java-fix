@@ -79,7 +79,7 @@ graph TD
 
 ## Tech Stack
 
-- **Java 17**
+- **Java 21**
 - **Spring Boot 3.2.4**
 - **QuickFIX/J 2.3.1** (FIX Engine)
 - **Spring Data JPA & H2** (Persistent Storage with concurrent access)
@@ -90,7 +90,7 @@ graph TD
 
 ### Prerequisites
 
-- Java 17+
+- Java 21+
 - Maven 3.8+
 
 ### 1. Build the Project
@@ -118,6 +118,47 @@ mvn spring-boot:run -Dstart-class=com.global.demo.MemberFirmApp
 ```
 - **Web UI:** [http://localhost:8081/member](http://localhost:8081/member)
 - **FIX Port:** Dynamic (Initiator)
+
+## Deployment
+
+For production-like environments, you can use Docker or Kubernetes.
+
+### 1. Docker Compose
+The easiest way to run the entire system is using Docker Compose:
+
+```bash
+# Build and start all services
+docker compose up -d --build
+```
+- **Clearing House:** [http://localhost:8080](http://localhost:8080)
+- **Member Firm:** [http://localhost:8081/member](http://localhost:8081/member)
+
+### 2. Kubernetes
+Deployment manifests are provided in the `k8s/` directory.
+
+#### Image Management
+Before deploying, make the image accessible to your cluster:
+
+**Remote Clusters:**
+```bash
+docker tag clearing-fix-demo:latest <your-registry>/clearing-fix-demo:latest
+docker push <your-registry>/clearing-fix-demo:latest
+```
+
+**Local Clusters (e.g., Minikube):**
+```bash
+minikube image load clearing-fix-demo:latest
+```
+
+#### Deploy
+Apply the manifests:
+```bash
+kubectl apply -f k8s/
+```
+
+Access the services:
+- **Acceptor:** `kubectl port-forward service/fix-acceptor 8080:8080 9876:9876`
+- **Initiator:** `kubectl port-forward deployment/fix-initiator 8081:8081`
 
 ## Configuration
 

@@ -1,0 +1,26 @@
+services:
+  fix-acceptor:
+    image: clearing-fix-demo:latest
+    environment:
+      - APP_MODE=acceptor
+    ports:
+      - "9876:9876"
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  fix-initiator:
+    image: clearing-fix-demo:latest
+    environment:
+      - APP_MODE=initiator
+      - FIX_INITIATOR_CONFIG=/app/config/initiator.cfg
+    volumes:
+      - ./docker-config:/app/config
+    depends_on:
+      fix-acceptor:
+        condition: service_healthy
+    ports:
+      - "8081:8081"

@@ -57,4 +57,16 @@ public class TradeServiceImpl implements TradeService {
     public List<Trade> getAllTrades() {
         return tradeRepository.findAll();
     }
+
+    @Override
+    public List<com.global.demo.model.TradeRecord> getAllTradeRecords() {
+        return tradeRepository.findAll().stream()
+                .map(com.global.demo.model.TradeRecord::fromEntity)
+                .toList();
+    }
+
+    public Trade getLatestTrade() {
+        List<Trade> trades = tradeRepository.findAll();
+        return trades.isEmpty() ? null : trades.getLast();
+    }
 }

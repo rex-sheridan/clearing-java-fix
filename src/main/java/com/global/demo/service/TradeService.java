@@ -11,4 +11,6 @@ public interface TradeService {
     Trade confirmTrade(String tradeId);
 
     List<Trade> getAllTrades();
+
+    List<com.global.demo.model.TradeRecord> getAllTradeRecords();
 }

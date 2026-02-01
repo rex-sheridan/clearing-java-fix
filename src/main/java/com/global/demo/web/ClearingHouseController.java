@@ -17,7 +17,7 @@ public class ClearingHouseController {
 
     @GetMapping("/")
     public String index(Model model) {
-        model.addAttribute("trades", tradeService.getAllTrades());
+        model.addAttribute("trades", tradeService.getAllTradeRecords());
         return "index";
     }
 }

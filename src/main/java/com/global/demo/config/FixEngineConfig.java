@@ -21,11 +21,32 @@ public class FixEngineConfig {
     public ThreadedSocketAcceptor acceptor(ClearingAcceptor clearingAcceptor,
             @Value("${fix.acceptor.config:acceptor.cfg}") String configFile) throws Exception {
         log.info("Starting FIX Acceptor with config: {}", configFile);
-        InputStream inputStream = FixEngineConfig.class.getClassLoader().getResourceAsStream(configFile);
+        InputStream inputStream;
+        java.io.File file = new java.io.File(configFile);
+        if (file.exists()) {
+            inputStream = new java.io.FileInputStream(file);
+        } else {
+            inputStream = FixEngineConfig.class.getClassLoader().getResourceAsStream(configFile);
+        }
+
+        if (inputStream == null) {
+            throw new java.io.FileNotFoundException("Could not find config file: " + configFile);
+        }
         SessionSettings settings = new SessionSettings(inputStream);
 
-        MessageStoreFactory storeFactory = new JdbcStoreFactory(settings);
-        LogFactory logFactory = new JdbcLogFactory(settings);
+        MessageStoreFactory storeFactory;
+        LogFactory logFactory;
+
+        if (configFile.contains("test")) {
+            storeFactory = new MemoryStoreFactory();
+            logFactory = new ScreenLogFactory(true, true, true);
+        } else if (isFileStoreConfigured(settings)) {
+            storeFactory = new FileStoreFactory(settings);
+            logFactory = new FileLogFactory(settings);
+        } else {
+            storeFactory = new JdbcStoreFactory(settings);
+            logFactory = new JdbcLogFactory(settings);
+        }
         MessageFactory messageFactory = new DefaultMessageFactory();
 
         ThreadedSocketAcceptor acceptor = new ThreadedSocketAcceptor(
@@ -40,11 +61,32 @@ public class FixEngineConfig {
     public ThreadedSocketInitiator initiator(MemberInitiator memberInitiator,
             @Value("${fix.initiator.config:initiator.cfg}") String configFile) throws Exception {
         log.info("Starting FIX Initiator with config: {}", configFile);
-        InputStream inputStream = FixEngineConfig.class.getClassLoader().getResourceAsStream(configFile);
+        InputStream inputStream;
+        java.io.File file = new java.io.File(configFile);
+        if (file.exists()) {
+            inputStream = new java.io.FileInputStream(file);
+        } else {
+            inputStream = FixEngineConfig.class.getClassLoader().getResourceAsStream(configFile);
+        }
+
+        if (inputStream == null) {
+            throw new java.io.FileNotFoundException("Could not find config file: " + configFile);
+        }
         SessionSettings settings = new SessionSettings(inputStream);
 
-        MessageStoreFactory storeFactory = new JdbcStoreFactory(settings);
-        LogFactory logFactory = new JdbcLogFactory(settings);
+        MessageStoreFactory storeFactory;
+        LogFactory logFactory;
+
+        if (configFile.contains("test")) {
+            storeFactory = new MemoryStoreFactory();
+            logFactory = new ScreenLogFactory(true, true, true);
+        } else if (isFileStoreConfigured(settings)) {
+            storeFactory = new FileStoreFactory(settings);
+            logFactory = new FileLogFactory(settings);
+        } else {
+            storeFactory = new JdbcStoreFactory(settings);
+            logFactory = new JdbcLogFactory(settings);
+        }
         MessageFactory messageFactory = new DefaultMessageFactory();
 
         ThreadedSocketInitiator initiator = new ThreadedSocketInitiator(
@@ -52,5 +94,13 @@ public class FixEngineConfig {
 
         initiator.start();
         return initiator;
+    }
+
+    private boolean isFileStoreConfigured(SessionSettings settings) {
+        try {
+            return settings.getString("FileStorePath") != null;
+        } catch (ConfigError e) {
+            return false;
+        }
     }
 }

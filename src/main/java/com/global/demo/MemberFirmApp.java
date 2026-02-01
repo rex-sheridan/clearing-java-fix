@@ -8,7 +8,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class MemberFirmApp {
     public static void main(String[] args) {
-        System.setProperty("spring.profiles.active", "initiator");
         SpringApplication.run(MemberFirmApp.class, args);
     }
 }

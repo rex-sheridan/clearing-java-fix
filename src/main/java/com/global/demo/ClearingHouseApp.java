@@ -8,7 +8,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class ClearingHouseApp {
     public static void main(String[] args) {
-        System.setProperty("spring.profiles.active", "acceptor");
         SpringApplication.run(ClearingHouseApp.class, args);
     }
 }
