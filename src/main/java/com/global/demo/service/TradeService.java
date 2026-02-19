@@ -6,6 +6,8 @@ import java.util.List;
 public interface TradeService {
     Trade createTrade(Trade trade);
 
+    Trade createTrade(Trade trade, String tradeId);
+
     Trade processAllocation(String tradeId, String allocationId);
 
     Trade confirmTrade(String tradeId);

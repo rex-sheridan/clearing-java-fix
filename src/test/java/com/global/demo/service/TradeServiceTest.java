@@ -19,12 +19,15 @@ class TradeServiceTest {
     @Mock
     private TradeRepository tradeRepository;
 
+    @Mock
+    private TradeKafkaProducer tradeKafkaProducer;
+
     private TradeServiceImpl tradeService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        tradeService = new TradeServiceImpl(tradeRepository);
+        tradeService = new TradeServiceImpl(tradeRepository, tradeKafkaProducer);
     }
 
     @Test

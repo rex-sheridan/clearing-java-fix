@@ -21,6 +21,15 @@ spring:
     init:
       schema-locations: classpath:quickfix-schema.sql
       mode: always
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+kafka:
+  topic:
+    confirmed-trades: confirmed-trades
 
 management:
   endpoints:

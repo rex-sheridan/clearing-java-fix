@@ -14,9 +14,11 @@ import java.util.UUID;
 public class TradeServiceImpl implements TradeService {
     private static final Logger log = LoggerFactory.getLogger(TradeServiceImpl.class);
     private final TradeRepository tradeRepository;
+    private final TradeKafkaProducer tradeKafkaProducer;
 
-    public TradeServiceImpl(TradeRepository tradeRepository) {
+    public TradeServiceImpl(TradeRepository tradeRepository, TradeKafkaProducer tradeKafkaProducer) {
         this.tradeRepository = tradeRepository;
+        this.tradeKafkaProducer = tradeKafkaProducer;
     }
 
     @Override
@@ -25,6 +27,15 @@ public class TradeServiceImpl implements TradeService {
         if (trade.getTradeId() == null) {
             trade.setTradeId("TRD-" + UUID.randomUUID().toString().substring(0, 8));
         }
+        trade.setStatus("SUBMITTED");
+        log.info("Creating trades: {}", trade.getTradeId());
+        return tradeRepository.save(trade);
+    }
+
+    @Override
+    @Transactional
+    public Trade createTrade(Trade trade, String tradeId) {
+        trade.setTradeId(tradeId);
         trade.setStatus("SUBMITTED");
         log.info("Creating trades: {}", trade.getTradeId());
         return tradeRepository.save(trade);
@@ -50,7 +61,11 @@ public class TradeServiceImpl implements TradeService {
                 .orElseThrow(() -> new RuntimeException("Trade not found: " + tradeId));
 
         trade.setStatus("CONFIRMED");
-        return tradeRepository.save(trade);
+        Trade savedTrade = tradeRepository.save(trade);
+
+        tradeKafkaProducer.sendConfirmedTrade(savedTrade);
+
+        return savedTrade;
     }
 
     @Override
